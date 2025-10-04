@@ -1,34 +1,9 @@
 import React, { useMemo } from 'react';
 import { Card, Select, Button, Row, Col, Statistic, Spin } from 'antd';
-import { Bar, Pie, Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  PointElement,
-  LineElement,
-} from 'chart.js';
+import { BarChart, Bar, PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFilterCategory } from '../../store/slices/tasksSlice';
 import dayjs from 'dayjs';
-
-// Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  PointElement,
-  LineElement
-);
 
 const TaskChart = () => {
   const dispatch = useDispatch();
@@ -87,150 +62,26 @@ const TaskChart = () => {
 
   const { taskCounts, tasksByDate, last7Days, completedTasks, completionRate, totalTasks } = chartData;
 
-  const barData = {
-    labels: categories.map(cat => categoryLabels[cat]),
-    datasets: [
-      {
-        label: 'Number of Tasks',
-        data: taskCounts,
-        backgroundColor: categories.map(cat => categoryColors[cat]),
-        borderColor: categories.map(cat => categoryColors[cat]),
-        borderWidth: 1,
-        borderRadius: 4,
-        borderSkipped: false,
-      },
-    ],
-  };
+  // Prepare data for Recharts
+  const barData = categories.map((cat, index) => ({
+    category: categoryLabels[cat],
+    count: taskCounts[index],
+    color: categoryColors[cat]
+  }));
 
-  const pieData = {
-    labels: categories.map(cat => categoryLabels[cat]),
-    datasets: [
-      {
-        data: taskCounts,
-        backgroundColor: categories.map(cat => categoryColors[cat]),
-        borderColor: '#fff',
-        borderWidth: 2,
-        hoverOffset: 4,
-      },
-    ],
-  };
+  const pieData = categories.map((cat, index) => ({
+    name: categoryLabels[cat],
+    value: taskCounts[index],
+    color: categoryColors[cat]
+  }));
 
-  const lineData = {
-    labels: last7Days.map(date => dayjs(date).format('MMM DD')),
-    datasets: [
-      {
-        label: 'Tasks Created',
-        data: tasksByDate,
-        borderColor: '#1890ff',
-        backgroundColor: 'rgba(24, 144, 255, 0.1)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.4,
-        pointBackgroundColor: '#1890ff',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointRadius: 5,
-      },
-    ],
-  };
+  const lineData = last7Days.map((date, index) => ({
+    date: dayjs(date).format('MMM DD'),
+    tasks: tasksByDate[index]
+  }));
 
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-        labels: {
-          usePointStyle: true,
-          padding: 20,
-        },
-      },
-      title: {
-        display: true,
-        text: 'Task Distribution by Category',
-        font: {
-          size: 16,
-          weight: 'bold',
-        },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          stepSize: 1,
-        },
-        grid: {
-          color: 'rgba(0, 0, 0, 0.1)',
-        },
-      },
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-    },
-  };
-
-  const pieOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom',
-        labels: {
-          usePointStyle: true,
-          padding: 20,
-        },
-      },
-      title: {
-        display: true,
-        text: 'Task Distribution (Percentage)',
-        font: {
-          size: 16,
-          weight: 'bold',
-        },
-      },
-    },
-  };
-
-  const lineOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-        labels: {
-          usePointStyle: true,
-          padding: 20,
-        },
-      },
-      title: {
-        display: true,
-        text: 'Tasks Created Over Time (Last 7 Days)',
-        font: {
-          size: 16,
-          weight: 'bold',
-        },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          stepSize: 1,
-        },
-        grid: {
-          color: 'rgba(0, 0, 0, 0.1)',
-        },
-      },
-      x: {
-        grid: {
-          color: 'rgba(0, 0, 0, 0.1)',
-        },
-      },
-    },
-  };
+  // Custom colors for pie chart cells
+  const COLORS = ['#52c41a', '#faad14', '#f5222d', '#1890ff'];
 
   const handleCategoryChange = (value) => {
     dispatch(setFilterCategory(value));
@@ -301,13 +152,55 @@ const TaskChart = () => {
         <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-100">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Bar Chart - Task Count by Category</h3>
           <div className="h-80">
-            <Bar data={barData} options={options} />
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={barData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="category" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#fff', 
+                    border: '1px solid #d9d9d9', 
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }} 
+                />
+                <Legend />
+                <Bar dataKey="count" fill="#1890ff" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
         <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-100">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Pie Chart - Task Distribution</h3>
           <div className="h-80">
-            <Pie data={pieData} options={pieOptions} />
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#fff', 
+                    border: '1px solid #d9d9d9', 
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }} 
+                />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
@@ -316,7 +209,30 @@ const TaskChart = () => {
       <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-100">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Tasks Created Over Time</h3>
         <div className="h-80">
-          <Line data={lineData} options={lineOptions} />
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={lineData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#fff', 
+                  border: '1px solid #d9d9d9', 
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                }} 
+              />
+              <Legend />
+              <Line 
+                type="monotone" 
+                dataKey="tasks" 
+                stroke="#1890ff" 
+                strokeWidth={2}
+                dot={{ fill: '#1890ff', strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, stroke: '#1890ff', strokeWidth: 2 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
 

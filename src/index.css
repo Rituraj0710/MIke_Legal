@@ -1,3 +1,4 @@
+@import 'antd/dist/reset.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,5 +16,121 @@
     @apply font-mono;
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
       monospace;
+  }
+}
+
+/* Override Ant Design default styles to use only Tailwind CSS */
+@layer components {
+  /* Modal overrides */
+  .ant-modal-content {
+    @apply rounded-xl shadow-2xl border-0;
+  }
+  
+  .ant-modal-header {
+    @apply border-b border-gray-200 px-6 py-5 bg-white rounded-t-xl;
+  }
+  
+  .ant-modal-body {
+    @apply px-6 py-6 bg-white;
+  }
+  
+  .ant-modal-close {
+    @apply top-5 right-5;
+  }
+
+  /* Form overrides */
+  .ant-form-item-label > label {
+    @apply text-gray-700 font-semibold text-sm;
+  }
+  
+  .ant-form-item-explain-error {
+    @apply text-red-500 text-xs mt-1;
+  }
+  
+  .ant-form-item-explain-success {
+    @apply text-green-500 text-xs mt-1;
+  }
+
+  /* Input overrides */
+  .ant-input,
+  .ant-input-affix-wrapper,
+  .ant-picker,
+  .ant-select-selector {
+    @apply rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 h-12;
+  }
+  
+  .ant-select-dropdown {
+    @apply rounded-lg shadow-lg border border-gray-200;
+  }
+
+  /* Button overrides */
+  .ant-btn {
+    @apply rounded-lg font-medium transition-all duration-200;
+  }
+  
+  .ant-btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 border-blue-600 hover:border-blue-700;
+  }
+  
+  .ant-btn-default {
+    @apply border-gray-300 text-gray-700 hover:border-gray-400 hover:text-gray-800;
+  }
+
+  /* Tabs overrides */
+  .ant-tabs-content-holder {
+    @apply bg-white rounded-b-xl;
+  }
+  
+  .ant-tabs-tab {
+    @apply px-4 py-3 mx-1 rounded-t-lg transition-all duration-200;
+  }
+  
+  .ant-tabs-tab-active {
+    @apply bg-blue-50 text-blue-600 border-blue-200;
+  }
+  
+  .ant-tabs-ink-bar {
+    @apply bg-blue-600;
+  }
+
+  /* Calendar overrides */
+  .ant-picker-calendar {
+    @apply border-0;
+  }
+  
+  .ant-picker-calendar-header {
+    @apply border-b border-gray-200 pb-4 mb-4;
+  }
+  
+  .ant-picker-calendar-date-content {
+    @apply h-20;
+  }
+
+  /* Badge overrides */
+  .ant-badge-status-dot {
+    @apply w-2 h-2;
+  }
+
+  /* Layout overrides */
+  .ant-layout-header {
+    @apply bg-white shadow-lg border-b border-gray-200;
+  }
+  
+  .ant-layout-content {
+    @apply bg-gray-50;
+  }
+
+  /* Empty state overrides */
+  .ant-empty-description {
+    @apply text-gray-500;
+  }
+
+  /* Popconfirm overrides */
+  .ant-popover-inner {
+    @apply rounded-lg shadow-lg border border-gray-200;
+  }
+  
+  .ant-popconfirm-buttons .ant-btn {
+    @apply rounded-md;
   }
 }

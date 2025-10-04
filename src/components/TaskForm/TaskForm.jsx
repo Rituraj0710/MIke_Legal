@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Form, Input, Select, DatePicker, Button } from 'antd';
 import { Formik, Field, ErrorMessage } from 'formik';
+import { motion } from 'framer-motion';
 import * as Yup from 'yup';
 import dayjs from 'dayjs';
 
@@ -49,18 +50,6 @@ const TaskForm = ({ visible, onCancel, onSubmit, initialValues, isEdit = false }
       footer={null}
       width={600}
       className="rounded-xl"
-      styles={{
-        content: {
-          borderRadius: '12px',
-        },
-        header: {
-          borderBottom: '1px solid #f0f0f0',
-          padding: '20px 24px',
-        },
-        body: {
-          padding: '24px',
-        }
-      }}
     >
       <Formik
         initialValues={defaultValues}
@@ -69,7 +58,12 @@ const TaskForm = ({ visible, onCancel, onSubmit, initialValues, isEdit = false }
         enableReinitialize
       >
         {({ values, handleChange, handleSubmit, setFieldValue, errors, touched, isSubmitting }) => (
-          <Form onFinish={handleSubmit} layout="vertical" className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Form onFinish={handleSubmit} layout="vertical" className="space-y-6">
             <Form.Item
               label={<span className="text-gray-700 font-semibold">Title</span>}
               required
@@ -163,7 +157,8 @@ const TaskForm = ({ visible, onCancel, onSubmit, initialValues, isEdit = false }
                 {isEdit ? 'Update Task' : 'Add Task'}
               </Button>
             </div>
-          </Form>
+            </Form>
+          </motion.div>
         )}
       </Formik>
     </Modal>

@@ -3,6 +3,7 @@ import { List, Tag, Button, Empty, Popconfirm, message, Input, Select, Row, Col 
 import { EditOutlined, DeleteOutlined, SearchOutlined, FilterOutlined } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteTask, setFilterCategory } from '../../store/slices/tasksSlice';
+import { motion, AnimatePresence } from 'framer-motion';
 import dayjs from 'dayjs';
 
 const TaskList = ({ selectedDate, onEditTask }) => {
@@ -157,11 +158,24 @@ const TaskList = ({ selectedDate, onEditTask }) => {
         </div>
       </div>
       <div className="space-y-3">
-        {filteredTasks.map(task => (
-          <div
-            key={task.id}
-            className="bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border border-gray-200 transition-all duration-200 hover:shadow-md"
-          >
+        <AnimatePresence>
+          {filteredTasks.map((task, index) => (
+            <motion.div
+              key={task.id}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ 
+                duration: 0.3, 
+                delay: index * 0.1,
+                ease: "easeOut"
+              }}
+              whileHover={{ 
+                scale: 1.02,
+                transition: { duration: 0.2 }
+              }}
+              className="bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border border-gray-200 transition-all duration-200 hover:shadow-md"
+            >
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
@@ -209,8 +223,9 @@ const TaskList = ({ selectedDate, onEditTask }) => {
                 </Popconfirm>
               </div>
             </div>
-          </div>
-        ))}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );

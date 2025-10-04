@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { Layout, Tabs, Typography, message, Spin, Alert } from 'antd';
 import { CalendarOutlined, BarChartOutlined } from '@ant-design/icons';
-import store from './store/store';
-import CalendarComponent from './components/Calendar/CalendarComponent';
-import TaskForm from './components/TaskForm/TaskForm';
-import TaskList from './components/TaskList/TaskList';
-import TaskChart from './components/Charts/TaskChart';
+import { motion } from 'framer-motion';
+import store from './store/store.jsx';
+import CalendarComponent from './components/Calendar/CalendarComponent.jsx';
+import TaskForm from './components/TaskForm/TaskForm.jsx';
+import TaskList from './components/TaskList/TaskList.jsx';
+import TaskChart from './components/Charts/TaskChart.jsx';
 import { useSelector, useDispatch } from 'react-redux';
 import { addTask, editTask, setSelectedDate } from './store/slices/tasksSlice';
 import dayjs from 'dayjs';
@@ -69,32 +70,49 @@ const AppContent = () => {
         </span>
       ),
       children: (
-        <div className="space-y-6">
+        <motion.div 
+          className="space-y-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="flex justify-between items-center">
             <Title level={3} className="mb-0">
               Task Calendar
             </Title>
-            <button
+            <motion.button
               onClick={handleAddTask}
               className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <span>+</span>
               <span>Add Task</span>
-            </button>
+            </motion.button>
           </div>
           
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            <div className="order-2 xl:order-1">
+            <motion.div 
+              className="order-2 xl:order-1"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               <CalendarComponent onDateSelect={handleDateSelect} />
-            </div>
-            <div className="order-1 xl:order-2">
+            </motion.div>
+            <motion.div 
+              className="order-1 xl:order-2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
               <TaskList 
                 selectedDate={selectedDate} 
                 onEditTask={handleEditTask}
               />
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       ),
     },
     {
@@ -105,7 +123,15 @@ const AppContent = () => {
           Analytics & Charts
         </span>
       ),
-      children: <TaskChart />,
+      children: (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <TaskChart />
+        </motion.div>
+      ),
     },
   ];
 
@@ -114,7 +140,7 @@ const AppContent = () => {
       <Header className="bg-white shadow-lg border-b border-gray-200 px-4 md:px-6 py-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between h-auto space-y-2 sm:space-y-0">
           <Title level={2} className="mb-0 text-blue-600 text-xl sm:text-2xl font-bold">
-            Task Manager App
+            MikeLegal Task Manager
           </Title>
           <div className="text-sm text-gray-600 font-medium">
             Manage your daily tasks efficiently
@@ -128,10 +154,6 @@ const AppContent = () => {
           items={tabItems}
           size="large"
           className="bg-white rounded-xl shadow-lg p-4 md:p-6"
-          tabBarStyle={{ 
-            marginBottom: '1.5rem',
-            borderBottom: '1px solid #f0f0f0'
-          }}
         />
       </Content>
 
