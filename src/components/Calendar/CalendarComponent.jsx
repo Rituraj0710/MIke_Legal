@@ -13,7 +13,7 @@ const CalendarComponent = ({ onDateSelect }) => {
     return tasks.filter(task => task.date === dateStr);
   };
 
-  const dateCellRender = (value) => {
+  const cellRender = (value, info) => {
     const listData = getListData(value);
     return (
       <ul className="events">
@@ -60,7 +60,7 @@ const CalendarComponent = ({ onDateSelect }) => {
         <p className="text-sm text-gray-600">Click on any date to add or view tasks</p>
       </div>
       <Calendar 
-        dateCellRender={dateCellRender}
+        cellRender={cellRender}
         onSelect={onSelect}
         className="w-full"
       />
